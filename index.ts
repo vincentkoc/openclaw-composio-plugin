@@ -52,6 +52,8 @@ function registerCli(api: OpenClawPluginApi): void {
           printStatus();
           console.log("");
           printWorkflow();
+          console.log("");
+          attemptUpgrade();
         });
     },
     { commands: ["composio"] },
@@ -70,42 +72,142 @@ function printSetup(): void {
   console.log("");
 }
 
+function isCliInstalled(): boolean {
+  try {
+    execFileSync("composio", ["--version"], {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function getWhoamiOutput(): string | null {
+  // `composio whoami` exits 0 with empty stdout when logged out, so the
+  // exit code alone is not a reliable signal — we have to inspect stdout.
+  try {
+    const out = execFileSync("composio", ["whoami"], {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    return out.length > 0 ? out : null;
+  } catch {
+    return null;
+  }
+}
+
 function printStatus(): void {
   console.log("\nComposio CLI Status\n");
 
-  try {
-    const whoami = execFileSync("composio", ["whoami"], {
-      encoding: "utf-8",
-      stdio: ["ignore", "pipe", "pipe"],
-    }).trim();
-
-    console.log("  CLI:    installed");
-    console.log("  Auth:   signed in");
-    if (whoami) {
-      console.log("");
-      console.log(whoami);
-    }
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.log("  CLI/Auth: not ready");
-    console.log(`  Detail:   ${message.split("\n")[0]}`);
+  if (!isCliInstalled()) {
+    console.log("  CLI:  not installed");
     console.log("");
-    console.log("  Run:");
+    console.log("  Install:");
     console.log(`    ${INSTALL_COMMAND}`);
     console.log("    composio login");
+    return;
+  }
+
+  console.log("  CLI:  installed");
+
+  const whoami = getWhoamiOutput();
+  if (!whoami) {
+    console.log("  Auth: not signed in");
+    console.log("");
+    console.log("  Run: composio login");
+    return;
+  }
+
+  console.log("  Auth: signed in");
+  try {
+    const parsed = JSON.parse(whoami) as {
+      email?: string;
+      default_org_name?: string;
+    };
+    if (parsed.email) console.log(`  User: ${parsed.email}`);
+    if (parsed.default_org_name) console.log(`  Org:  ${parsed.default_org_name}`);
+  } catch {
+    console.log("");
+    console.log(whoami);
   }
 }
 
 function printWorkflow(): void {
-  console.log("Recommended OpenClaw + Composio workflow\n");
-  console.log("  1. Search for the right tool:");
-  console.log('     composio search "create a github issue"');
-  console.log("  2. Inspect or preview inputs:");
-  console.log("     composio execute GITHUB_CREATE_ISSUE --get-schema");
-  console.log("     composio execute GITHUB_CREATE_ISSUE --dry-run -d '{ owner: \"acme\", repo: \"app\", title: \"Bug\" }'");
-  console.log("  3. Connect the app if prompted:");
-  console.log("     composio link github");
-  console.log("  4. Retry the execute command.");
+  // Defer to the CLI's own `--help` so guidance stays in sync with the
+  // installed CLI version instead of going stale in this plugin.
+  let help: string;
+  try {
+    help = execFileSync("composio", ["--help"], {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+  } catch {
+    return;
+  }
+
+  console.log(help.trimEnd());
+  console.log("");
+  console.log("Targeted examples:");
+  console.log("  composio execute GITHUB_CREATE_AN_ISSUE --get-schema");
+  console.log(
+    '  composio execute GITHUB_CREATE_AN_ISSUE --dry-run -d \'{ owner: "acme", repo: "app", title: "Bug" }\'',
+  );
+  console.log("");
+}
+
+function attemptUpgrade(): void {
+  if (!isCliInstalled()) {
+    return;
+  }
+
+  console.log("Running composio upgrade...\n");
+
+  try {
+    execFileSync("composio", ["upgrade"], {
+      stdio: "inherit",
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.log("");
+    console.log("composio upgrade failed:");
+    console.log(`  ${message.split("\n")[0]}`);
+    console.log("");
+    printReinstallHelp();
+  }
+}
+
+function getCliPath(): string | null {
+  try {
+    return execFileSync("which", ["composio"], {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    return null;
+  }
+}
+
+function printReinstallHelp(): void {
+  const cliPath = getCliPath();
+
+  console.log("Try a clean reinstall:\n");
+
+  if (cliPath) {
+    console.log(`  # Current install: ${cliPath}`);
+  }
+  console.log("  # 1. Remove the install directory");
+  console.log("  rm -rf ~/.composio");
+  console.log("");
+  console.log("  # 2. Strip the '# Composio CLI' block from your shell rc:");
+  console.log("  #    zsh:  ~/.zshrc");
+  console.log("  #    bash: ~/.bashrc or ~/.bash_profile");
+  console.log("  #    fish: ~/.config/fish/config.fish");
+  console.log("");
+  console.log("  # 3. Open a new terminal, then reinstall:");
+  console.log(`  ${INSTALL_COMMAND}`);
+  console.log("  composio login");
   console.log("");
 }
 

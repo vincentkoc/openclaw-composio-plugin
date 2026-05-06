@@ -33,8 +33,8 @@ Start with the CLI:
 
 ```bash
 composio search "create a github issue"
-composio execute GITHUB_CREATE_ISSUE --get-schema
-composio execute GITHUB_CREATE_ISSUE --dry-run -d '{ owner: "acme", repo: "app", title: "Bug report" }'
+composio execute GITHUB_CREATE_AN_ISSUE --get-schema
+composio execute GITHUB_CREATE_AN_ISSUE --dry-run -d '{ owner: "acme", repo: "app", title: "Bug report" }'
 ```
 
 If the CLI says an app is not connected, link it and retry:
