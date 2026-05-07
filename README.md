@@ -7,7 +7,7 @@ This package is intentionally small. It exists as an OpenClaw marketplace/plugin
 ## Install the Composio CLI
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ComposioHQ/composio/main/install.sh | bash -s -- --agent
+curl -fsSL https://composio.dev/install | bash -s -- --agent
 ```
 
 Then sign in:

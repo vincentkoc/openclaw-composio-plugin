@@ -1,7 +1,8 @@
 import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
 import { execFileSync } from "node:child_process";
 
-const INSTALL_COMMAND = "curl -fsSL https://raw.githubusercontent.com/ComposioHQ/composio/main/install.sh | bash -s -- --agent";
+const INSTALL_COMMAND =
+  "curl -fsSL https://composio.dev/install | bash -s -- --agent";
 
 const composioPluginConfigSchema = {
   parse: () => ({}),
@@ -10,7 +11,8 @@ const composioPluginConfigSchema = {
 const composioPlugin = {
   id: "composio",
   name: "Composio",
-  description: "Use the Composio CLI from OpenClaw to access 1000+ third-party tools.",
+  description:
+    "Use the Composio CLI from OpenClaw to access 1000+ third-party tools.",
   configSchema: composioPluginConfigSchema,
 
   register(api: OpenClawPluginApi) {
@@ -20,7 +22,9 @@ const composioPlugin = {
       prependSystemContext: getCliSystemPrompt(),
     }));
 
-    api.logger.info("[composio] Loaded CLI guidance plugin. Run 'openclaw composio setup' for next steps.");
+    api.logger.info(
+      "[composio] Loaded CLI guidance plugin. Run 'openclaw composio setup' for next steps.",
+    );
   },
 };
 
@@ -67,7 +71,9 @@ function printSetup(): void {
   console.log("\nSign in:");
   console.log("  composio login");
   console.log("  composio whoami");
-  console.log("\nThen use Composio from OpenClaw by asking for external app work, or run CLI commands directly.");
+  console.log(
+    "\nThen use Composio from OpenClaw by asking for external app work, or run CLI commands directly.",
+  );
   console.log("For app setup: composio link <app>");
   console.log("");
 }
@@ -127,7 +133,8 @@ function printStatus(): void {
       default_org_name?: string;
     };
     if (parsed.email) console.log(`  User: ${parsed.email}`);
-    if (parsed.default_org_name) console.log(`  Org:  ${parsed.default_org_name}`);
+    if (parsed.default_org_name)
+      console.log(`  Org:  ${parsed.default_org_name}`);
   } catch {
     console.log("");
     console.log(whoami);
