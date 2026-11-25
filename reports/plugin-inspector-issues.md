@@ -5,41 +5,58 @@ Status: PASS
 
 ## Triage Summary
 
-| Metric               | Value |
-| -------------------- | ----- |
-| Issue findings       | 4     |
-| P0                   | 0     |
-| P1                   | 0     |
-| Live issues          | 0     |
-| Live P0 issues       | 0     |
-| Compat gaps          | 0     |
-| Deprecation warnings | 1     |
-| Inspector gaps       | 3     |
-| Upstream metadata    | 0     |
-| Contract probes      | 4     |
+| Metric                     | Value |
+| -------------------------- | ----- |
+| Issue findings             | 4     |
+| Open issue findings        | 4     |
+| Runtime-covered findings   | 0     |
+| Runtime-partial findings   | 0     |
+| P0                         | 0     |
+| P1                         | 2     |
+| Open P0                    | 0     |
+| Open P1                    | 2     |
+| Live issues                | 0     |
+| Live P0 issues             | 0     |
+| Compat gaps                | 2     |
+| Deprecation warnings       | 1     |
+| Inspector gaps             | 1     |
+| Open inspector gaps        | 1     |
+| Runtime coverage artifacts | 0     |
+| Upstream metadata          | 0     |
+| Contract probes            | 3     |
 
 ## Triage Overview
 
-| Class               | Count | P0 | Meaning                                                                                                         |
-| ------------------- | ----- | -- | --------------------------------------------------------------------------------------------------------------- |
-| live-issue          | 0     | 0  | Potential runtime breakage in the target OpenClaw/plugin pair. P0 only when it is not a deprecated compat seam. |
-| compat-gap          | 0     | -  | Compatibility behavior is needed but missing from the target OpenClaw compat registry.                          |
-| deprecation-warning | 1     | -  | Plugin uses a supported but deprecated compatibility seam; keep it wired while migration exists.                |
-| inspector-gap       | 3     | -  | Plugin Inspector needs stronger capture/probe evidence before making contract judgments.                        |
-| upstream-metadata   | 0     | -  | Plugin package or manifest metadata should improve upstream; not a target OpenClaw live break by itself.        |
-| fixture-regression  | 0     | -  | Fixture no longer exposes an expected seam; investigate fixture pin or scanner drift.                           |
+| Class               | Count | P0 | Meaning                                                                                                                                                  |
+| ------------------- | ----- | -- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| live-issue          | 0     | 0  | Potential runtime breakage in the target OpenClaw/plugin pair. P0 only when it is not a deprecated compat seam.                                          |
+| compat-gap          | 2     | -  | Compatibility behavior is needed but missing from the target OpenClaw compat registry.                                                                   |
+| deprecation-warning | 1     | -  | Plugin uses a supported but deprecated compatibility seam; keep it wired while migration exists.                                                         |
+| inspector-gap       | 1     | -  | Plugin Inspector needs stronger capture/probe evidence before making contract judgments. Runtime-covered rows are proof-backed and not open report work. |
+| upstream-metadata   | 0     | -  | Plugin package or manifest metadata should improve upstream; not a target OpenClaw live break by itself.                                                 |
+| fixture-regression  | 0     | -  | Fixture no longer exposes an expected seam; investigate fixture pin or scanner drift.                                                                    |
 
 ## P0 Live Issues
 
 _none_
 
-## Live Issues
+## Other Live Issues
 
 _none_
 
 ## Compat Gaps
 
-_none_
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **missing-compat-record**: composio: compat-dependent behavior lacks registry coverage
+  - state: open · compat:missing
+  - evidence:
+    - legacy-root-sdk-import
+
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **sdk-export-missing**: composio: plugin SDK import aliases are missing from target package exports
+  - state: open · compat:untracked
+  - evidence:
+    - openclaw/plugin-sdk @ index.ts:1
 
 ## Deprecation Warnings
 
@@ -48,18 +65,11 @@ _none_
   - state: open · compat:deprecated · deprecated
   - evidence:
     - openclaw/plugin-sdk @ index.ts:1
-    - openclaw/plugin-sdk @ src/cli.ts:6
-    - openclaw/plugin-sdk @ src/client.ts:1
-    - openclaw/plugin-sdk @ src/tools.ts:1
+  - author remediation:
+    - Prefer focused public plugin SDK subpath imports instead of the legacy root barrel.
+    - docs: https://docs.openclaw.ai/clawhub/plugin-validation-fixes#legacy-root-sdk-import
 
 ## Inspector Proof Gaps
-
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **package-dependency-install-required**: composio: cold import requires isolated dependency installation
-  - state: open · compat:none
-  - evidence:
-    - @modelcontextprotocol/sdk @ package.json
-    - zod @ package.json
 
 - P2 **composio** `inspector-gap` `inspector-follow-up`
   - **package-typescript-source-entrypoint**: composio: cold import needs TypeScript source entrypoint support
@@ -67,11 +77,9 @@ _none_
   - evidence:
     - extension:index.ts
 
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **runtime-tool-capture**: composio: runtime tool schema needs registration capture
-  - state: open · compat:none
-  - evidence:
-    - registerTool @ src/tools.ts:89
+## Runtime-Covered Inspector Gaps
+
+_none_
 
 ## Upstream Metadata Issues
 
@@ -79,21 +87,26 @@ _none_
 
 ## Issues
 
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **missing-compat-record**: composio: compat-dependent behavior lacks registry coverage
+  - state: open · compat:missing
+  - evidence:
+    - legacy-root-sdk-import
+
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **sdk-export-missing**: composio: plugin SDK import aliases are missing from target package exports
+  - state: open · compat:untracked
+  - evidence:
+    - openclaw/plugin-sdk @ index.ts:1
+
 - P2 **composio** `deprecation-warning` `core-compat-adapter`
   - **legacy-root-sdk-import**: composio: root plugin SDK barrel is still used by fixtures
   - state: open · compat:deprecated · deprecated
   - evidence:
     - openclaw/plugin-sdk @ index.ts:1
-    - openclaw/plugin-sdk @ src/cli.ts:6
-    - openclaw/plugin-sdk @ src/client.ts:1
-    - openclaw/plugin-sdk @ src/tools.ts:1
-
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **package-dependency-install-required**: composio: cold import requires isolated dependency installation
-  - state: open · compat:none
-  - evidence:
-    - @modelcontextprotocol/sdk @ package.json
-    - zod @ package.json
+  - author remediation:
+    - Prefer focused public plugin SDK subpath imports instead of the legacy root barrel.
+    - docs: https://docs.openclaw.ai/clawhub/plugin-validation-fixes#legacy-root-sdk-import
 
 - P2 **composio** `inspector-gap` `inspector-follow-up`
   - **package-typescript-source-entrypoint**: composio: cold import needs TypeScript source entrypoint support
@@ -101,20 +114,13 @@ _none_
   - evidence:
     - extension:index.ts
 
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **runtime-tool-capture**: composio: runtime tool schema needs registration capture
-  - state: open · compat:none
-  - evidence:
-    - registerTool @ src/tools.ts:89
-
 ## Contract Probe Backlog
 
-- P2 **composio** `package-loader`
-  - contract: Inspector installs package dependencies in an isolated workspace before cold import.
-  - id: `package.entrypoint.isolated-dependency-install:composio`
+- P1 **composio** `sdk-alias`
+  - contract: Every observed OpenClaw plugin SDK import remains exported by the target OpenClaw package.
+  - id: `sdk.import.package-export-cold-import:composio`
   - evidence:
-    - @modelcontextprotocol/sdk @ package.json
-    - zod @ package.json
+    - openclaw/plugin-sdk @ index.ts:1
 
 - P2 **composio** `package-loader`
   - contract: Inspector can compile or load TypeScript source entrypoints before registration capture.
@@ -127,12 +133,3 @@ _none_
   - id: `sdk.import.root-barrel-cold-import:composio`
   - evidence:
     - openclaw/plugin-sdk @ index.ts:1
-    - openclaw/plugin-sdk @ src/cli.ts:6
-    - openclaw/plugin-sdk @ src/client.ts:1
-    - openclaw/plugin-sdk @ src/tools.ts:1
-
-- P2 **composio** `tool-runtime`
-  - contract: Registered runtime tools expose stable names, input schemas, and result metadata.
-  - id: `tool.registration.schema-capture:composio`
-  - evidence:
-    - registerTool @ src/tools.ts:89

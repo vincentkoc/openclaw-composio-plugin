@@ -1,12 +1,25 @@
-# Composio Plugin for OpenClaw
+# Composio for OpenClaw
 
-> **⚠️ This plugin is no longer actively maintained.** We're excited to announce our [Universal CLI](https://composio.dev/cli), optimized for use with OpenClaw. It outperformed this plugin on internal benchmarks, and we recommend migrating to it. This plugin will continue to work but will not receive new features or bug fixes.
->
-> [Get started with the Universal CLI →](https://composio.dev/cli)
+Use the Composio CLI with OpenClaw to access 1000+ third-party tools: Gmail, Slack, GitHub, Notion, Linear, Jira, HubSpot, Salesforce, Google Drive, and more.
 
-Access 1000+ third-party tools via Composio MCP — Gmail, Slack, GitHub, Notion, Linear, Jira, HubSpot, Salesforce, Google Drive, and more.
+This package is intentionally small. It exists as an OpenClaw marketplace/plugin entry that points agents and users to the Composio CLI. The old direct MCP plugin path is no longer the recommended integration.
 
-## Install
+## Install the Composio CLI
+
+```bash
+curl -fsSL https://composio.dev/install | bash -s -- --agent
+```
+
+Then sign in:
+
+```bash
+composio login
+composio whoami
+```
+
+## Optional: Install the OpenClaw Plugin
+
+Install this plugin if you want OpenClaw to show Composio onboarding and CLI guidance:
 
 ```bash
 openclaw plugins install @composio/openclaw-plugin
@@ -14,56 +27,63 @@ openclaw plugins install @composio/openclaw-plugin
 
 Restart OpenClaw after installing.
 
-## Setup
+## How to Use Composio
+
+Start with the CLI:
 
 ```bash
-openclaw composio setup --key "ck_your_key_here"
+composio search "create a github issue"
+composio execute GITHUB_CREATE_AN_ISSUE --get-schema
+composio execute GITHUB_CREATE_AN_ISSUE --dry-run -d '{ owner: "acme", repo: "app", title: "Bug report" }'
 ```
 
-Get your consumer key from [dashboard.composio.dev](http://dashboard.composio.dev/~/org/connect/clients/openclaw). That's it.
-
-## How it works
-
-Once configured, the plugin connects to Composio's MCP server at startup, fetches available tools, and registers them directly into the agent. No manual MCP config needed.
-
-If a tool returns an auth error, the agent will prompt you to connect that app at [dashboard.composio.dev](http://dashboard.composio.dev/~/org/connect/clients/openclaw).
-
-## AI Tools
-
-| Tool | Description |
-|---|---|
-| `COMPOSIO_SEARCH_TOOLS` | Search available Composio tools by name or category |
-| `COMPOSIO_GET_TOOL_SCHEMAS` | Get input schemas for specific tools |
-| `COMPOSIO_MANAGE_CONNECTIONS` | Connect or disconnect third-party apps |
-| `COMPOSIO_WAIT_FOR_CONNECTIONS` | Wait for OAuth flows to complete |
-| `COMPOSIO_MULTI_EXECUTE_TOOL` | Execute one or more tools in a single call |
-
-## CLI Commands
+If the CLI says an app is not connected, link it and retry:
 
 ```bash
-openclaw composio setup --key ck_...   # Configure consumer key
-openclaw composio status               # View current configuration
-openclaw composio doctor               # Test connection and list tools
+composio link github
+composio execute GITHUB_GET_THE_AUTHENTICATED_USER -d '{}'
 ```
 
-## Configuration
-
-Set consumer key via environment variable:
+For multi-step workflows, use `composio run`:
 
 ```bash
-export COMPOSIO_CONSUMER_KEY="ck_..."
+composio run '
+  const me = await execute("GITHUB_GET_THE_AUTHENTICATED_USER");
+  console.log(me);
+'
 ```
 
-Or in `~/.openclaw/openclaw.json`:
+## Onboarding Flow
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `consumerKey` | `string` | — | Your Composio consumer key (`ck_...`) |
-| `enabled` | `boolean` | `true` | Enable or disable the plugin |
-| `mcpUrl` | `string` | `https://connect.composio.dev/mcp` | MCP server URL (advanced) |
+For first-time users, OpenClaw should guide them through:
+
+1. Check CLI install and auth with `composio whoami`.
+2. If needed, run the install command above and `composio login`.
+3. Ask what they want to automate.
+4. Recommend 2-4 apps, then connect each one with `composio link <app>`.
+5. Verify the connection with a small `composio execute ...` command.
+
+Common verification commands:
+
+```bash
+composio execute GITHUB_GET_THE_AUTHENTICATED_USER -d '{}'
+composio execute GMAIL_FETCH_EMAILS -d '{ max_results: 1 }'
+composio execute SLACK_LIST_CHANNELS -d '{}'
+composio execute NOTION_SEARCH_NOTION_PAGE -d '{ query: "" }'
+composio execute LINEAR_LIST_LINEAR_TEAMS -d '{}'
+```
+
+## OpenClaw Helper Commands
+
+After installing this plugin:
+
+```bash
+openclaw composio setup    # Print CLI install and login steps
+openclaw composio status   # Check whether the CLI is installed and signed in
+openclaw composio doctor   # Show the recommended OpenClaw + Composio flow
+```
 
 ## Links
 
-- [Composio Documentation](https://docs.composio.dev)
-- [Composio Dashboard](http://dashboard.composio.dev/~/org/connect/)
-- [MCP Protocol](https://modelcontextprotocol.io)
+- [Composio CLI docs](https://docs.composio.dev/docs/cli)
+- [Composio Dashboard](https://app.composio.dev)

@@ -5,47 +5,64 @@ Status: PASS
 
 ## Summary
 
-| Metric                    | Value |
-| ------------------------- | ----- |
-| Fixtures                  | 1     |
-| High-priority fixtures    | 1     |
-| Hard breakages            | 0     |
-| Warnings                  | 1     |
-| Compatibility suggestions | 3     |
-| Issue findings            | 4     |
-| P0 issues                 | 0     |
-| P1 issues                 | 0     |
-| Live issues               | 0     |
-| Live P0 issues            | 0     |
-| Compat gaps               | 0     |
-| Deprecation warnings      | 1     |
-| Inspector gaps            | 3     |
-| Upstream metadata         | 0     |
-| Contract probes           | 4     |
-| Decision rows             | 4     |
+| Metric                     | Value |
+| -------------------------- | ----- |
+| Fixtures                   | 1     |
+| High-priority fixtures     | 1     |
+| Hard breakages             | 0     |
+| Warnings                   | 2     |
+| Compatibility suggestions  | 2     |
+| Issue findings             | 4     |
+| Open issue findings        | 4     |
+| Runtime-covered findings   | 0     |
+| Runtime-partial findings   | 0     |
+| P0 issues                  | 0     |
+| P1 issues                  | 2     |
+| Open P0 issues             | 0     |
+| Open P1 issues             | 2     |
+| Live issues                | 0     |
+| Live P0 issues             | 0     |
+| Compat gaps                | 2     |
+| Deprecation warnings       | 1     |
+| Inspector gaps             | 1     |
+| Open inspector gaps        | 1     |
+| Runtime coverage artifacts | 0     |
+| Upstream metadata          | 0     |
+| Contract probes            | 3     |
+| Decision rows              | 4     |
 
 ## Triage Overview
 
-| Class               | Count | P0 | Meaning                                                                                                         |
-| ------------------- | ----- | -- | --------------------------------------------------------------------------------------------------------------- |
-| live-issue          | 0     | 0  | Potential runtime breakage in the target OpenClaw/plugin pair. P0 only when it is not a deprecated compat seam. |
-| compat-gap          | 0     | -  | Compatibility behavior is needed but missing from the target OpenClaw compat registry.                          |
-| deprecation-warning | 1     | -  | Plugin uses a supported but deprecated compatibility seam; keep it wired while migration exists.                |
-| inspector-gap       | 3     | -  | Plugin Inspector needs stronger capture/probe evidence before making contract judgments.                        |
-| upstream-metadata   | 0     | -  | Plugin package or manifest metadata should improve upstream; not a target OpenClaw live break by itself.        |
-| fixture-regression  | 0     | -  | Fixture no longer exposes an expected seam; investigate fixture pin or scanner drift.                           |
+| Class               | Count | P0 | Meaning                                                                                                                                                  |
+| ------------------- | ----- | -- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| live-issue          | 0     | 0  | Potential runtime breakage in the target OpenClaw/plugin pair. P0 only when it is not a deprecated compat seam.                                          |
+| compat-gap          | 2     | -  | Compatibility behavior is needed but missing from the target OpenClaw compat registry.                                                                   |
+| deprecation-warning | 1     | -  | Plugin uses a supported but deprecated compatibility seam; keep it wired while migration exists.                                                         |
+| inspector-gap       | 1     | -  | Plugin Inspector needs stronger capture/probe evidence before making contract judgments. Runtime-covered rows are proof-backed and not open report work. |
+| upstream-metadata   | 0     | -  | Plugin package or manifest metadata should improve upstream; not a target OpenClaw live break by itself.                                                 |
+| fixture-regression  | 0     | -  | Fixture no longer exposes an expected seam; investigate fixture pin or scanner drift.                                                                    |
 
 ## P0 Live Issues
 
 _none_
 
-## Live Issues
+## Other Live Issues
 
 _none_
 
 ## Compat Gaps
 
-_none_
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **missing-compat-record**: composio: compat-dependent behavior lacks registry coverage
+  - state: open · compat:missing
+  - evidence:
+    - legacy-root-sdk-import
+
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **sdk-export-missing**: composio: plugin SDK import aliases are missing from target package exports
+  - state: open · compat:untracked
+  - evidence:
+    - openclaw/plugin-sdk @ index.ts:1
 
 ## Deprecation Warnings
 
@@ -54,18 +71,11 @@ _none_
   - state: open · compat:deprecated · deprecated
   - evidence:
     - openclaw/plugin-sdk @ index.ts:1
-    - openclaw/plugin-sdk @ src/cli.ts:6
-    - openclaw/plugin-sdk @ src/client.ts:1
-    - openclaw/plugin-sdk @ src/tools.ts:1
+  - author remediation:
+    - Prefer focused public plugin SDK subpath imports instead of the legacy root barrel.
+    - docs: https://docs.openclaw.ai/clawhub/plugin-validation-fixes#legacy-root-sdk-import
 
 ## Inspector Proof Gaps
-
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **package-dependency-install-required**: composio: cold import requires isolated dependency installation
-  - state: open · compat:none
-  - evidence:
-    - @modelcontextprotocol/sdk @ package.json
-    - zod @ package.json
 
 - P2 **composio** `inspector-gap` `inspector-follow-up`
   - **package-typescript-source-entrypoint**: composio: cold import needs TypeScript source entrypoint support
@@ -73,11 +83,9 @@ _none_
   - evidence:
     - extension:index.ts
 
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **runtime-tool-capture**: composio: runtime tool schema needs registration capture
-  - state: open · compat:none
-  - evidence:
-    - registerTool @ src/tools.ts:89
+## Runtime-Covered Inspector Gaps
+
+_none_
 
 ## Upstream Metadata Issues
 
@@ -89,57 +97,62 @@ _none_
 
 ## Target OpenClaw Compat Records
 
-| Metric                   | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Configured path          | <OPENCLAW_PATH>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Status                   | ok                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Compat registry          | ../../openclaw/src/plugins/compat/registry.ts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Compat records           | 56                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Compat status counts     | active:13, deprecated:43                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Record ids               | activation-agent-harness-hint, activation-capability-hint, activation-channel-hint, activation-command-hint, activation-config-path-hint, activation-provider-hint, activation-route-hint, agent-harness-id-alias, agent-harness-sdk-alias, agent-tool-result-harness-alias, approval-capability-approvals-alias, bundled-channel-config-schema-legacy, bundled-plugin-allowlist, bundled-plugin-enablement, bundled-plugin-load-path-aliases, bundled-plugin-vitest-defaults, channel-env-vars, channel-exposure-legacy-aliases, channel-mention-gating-legacy-helpers, channel-native-message-schema-helpers, channel-route-key-aliases, channel-runtime-sdk-alias, channel-target-comparable-aliases, clawdbot-config-type-alias, command-auth-status-builders, disable-persisted-plugin-registry-env, embedded-harness-config-alias, generated-bundled-channel-config-fallback, hook-only-plugin-shape, legacy-before-agent-start, legacy-extension-api-import, legacy-implicit-startup-sidecar, legacy-root-sdk-import, memory-split-registration, openclaw-schema-type-alias, plugin-activate-entrypoint-alias, plugin-install-config-ledger, plugin-owned-web-fetch-config, plugin-owned-web-search-config, plugin-owned-x-search-config, plugin-registry-install-migration-env, plugin-sdk-test-utils-alias, plugin-sdk-testing-barrel, provider-auth-env-vars, provider-discovery-hook-alias, provider-discovery-type-aliases, provider-external-oauth-profiles-hook, provider-static-capabilities-bag, provider-thinking-policy-hooks, provider-web-search-core-wrapper, runtime-config-load-write, runtime-inbound-envelope-alias, runtime-stt-alias, runtime-subagent-get-session-alias, runtime-taskflow-legacy-alias, setup-runtime-fallback |
-| Hook registry            | ../../openclaw/src/plugins/hook-types.ts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Hook names               | 35                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| API builder              | ../../openclaw/src/plugins/api-builder.ts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| API registrars           | 48                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Captured registration    | ../../openclaw/src/plugins/captured-registration.ts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Captured registrars      | 26                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Package metadata         | ../../openclaw/package.json                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| Plugin SDK exports       | 292                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Manifest types           | ../../openclaw/src/plugins/manifest.ts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Manifest fields          | 35                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Manifest contract fields | 17                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Metric                   | Value                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| Configured path          | <OPENCLAW_PATH>                                                                |
+| Status                   | ok                                                                             |
+| Compat registry          | <OPENCLAW_PATH>/src/plugins/compat/registry.ts       |
+| Compat records           | 0                                                                              |
+| Compat status counts     | -                                                                              |
+| Record ids               | -                                                                              |
+| Hook registry            | <OPENCLAW_PATH>/src/plugins/hook-types.ts            |
+| Hook names               | 0                                                                              |
+| API builder              | <OPENCLAW_PATH>/src/plugins/api-builder.ts           |
+| API registrars           | 58                                                                             |
+| Captured registration    | <OPENCLAW_PATH>/src/plugins/captured-registration.ts |
+| Captured registrars      | 5                                                                              |
+| Package metadata         | <OPENCLAW_PATH>/package.json                         |
+| Plugin SDK exports       | 368                                                                            |
+| Manifest types           | <OPENCLAW_PATH>/src/plugins/manifest.ts              |
+| Manifest fields          | 0                                                                              |
+| Manifest contract fields | 0                                                                              |
 
 ## Warnings
 
-| Fixture  | Code                   | Level   | Message                                    | Evidence                                                                                                                                          | Compat record          |
-| -------- | ---------------------- | ------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| composio | legacy-root-sdk-import | warning | fixture imports the root plugin SDK barrel | openclaw/plugin-sdk @ index.ts:1, openclaw/plugin-sdk @ src/cli.ts:6, openclaw/plugin-sdk @ src/client.ts:1, openclaw/plugin-sdk @ src/tools.ts:1 | legacy-root-sdk-import |
+| Fixture  | Code                   | Level   | Message                                                                                 | Evidence                         | Compat record             |
+| -------- | ---------------------- | ------- | --------------------------------------------------------------------------------------- | -------------------------------- | ------------------------- |
+| composio | sdk-export-missing     | warning | fixture imports plugin SDK aliases that are not exported by the target OpenClaw package | openclaw/plugin-sdk @ index.ts:1 | plugin-sdk-export-aliases |
+| composio | legacy-root-sdk-import | warning | fixture imports the root plugin SDK barrel                                              | openclaw/plugin-sdk @ index.ts:1 | legacy-root-sdk-import    |
 
 ## Suggestions To OpenClaw Compat Layer
 
-| Fixture  | Code                                 | Level      | Message                                                                            | Evidence                                                     | Compat record |
-| -------- | ------------------------------------ | ---------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------- |
-| composio | package-typescript-source-entrypoint | suggestion | package OpenClaw entrypoint resolves to TypeScript source in this fixture checkout | extension:index.ts                                           | -             |
-| composio | package-dependency-install-required  | suggestion | package declares runtime dependencies that must be installed before cold import    | @modelcontextprotocol/sdk @ package.json, zod @ package.json | -             |
-| composio | runtime-tool-capture                 | suggestion | tool shape is only visible after runtime registration capture                      | registerTool @ src/tools.ts:89                               | -             |
+| Fixture  | Code                                 | Level      | Message                                                                                           | Evidence               | Compat record          |
+| -------- | ------------------------------------ | ---------- | ------------------------------------------------------------------------------------------------- | ---------------------- | ---------------------- |
+| composio | package-typescript-source-entrypoint | suggestion | package OpenClaw entrypoint resolves to TypeScript source in this fixture checkout                | extension:index.ts     | -                      |
+| composio | missing-compat-record                | suggestion | fixture depends on a compatibility behavior that is not represented in the target compat registry | legacy-root-sdk-import | legacy-root-sdk-import |
 
 ## Issue Findings
+
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **missing-compat-record**: composio: compat-dependent behavior lacks registry coverage
+  - state: open · compat:missing
+  - evidence:
+    - legacy-root-sdk-import
+
+- P1 **composio** `compat-gap` `core-compat-adapter`
+  - **sdk-export-missing**: composio: plugin SDK import aliases are missing from target package exports
+  - state: open · compat:untracked
+  - evidence:
+    - openclaw/plugin-sdk @ index.ts:1
 
 - P2 **composio** `deprecation-warning` `core-compat-adapter`
   - **legacy-root-sdk-import**: composio: root plugin SDK barrel is still used by fixtures
   - state: open · compat:deprecated · deprecated
   - evidence:
     - openclaw/plugin-sdk @ index.ts:1
-    - openclaw/plugin-sdk @ src/cli.ts:6
-    - openclaw/plugin-sdk @ src/client.ts:1
-    - openclaw/plugin-sdk @ src/tools.ts:1
-
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **package-dependency-install-required**: composio: cold import requires isolated dependency installation
-  - state: open · compat:none
-  - evidence:
-    - @modelcontextprotocol/sdk @ package.json
-    - zod @ package.json
+  - author remediation:
+    - Prefer focused public plugin SDK subpath imports instead of the legacy root barrel.
+    - docs: https://docs.openclaw.ai/clawhub/plugin-validation-fixes#legacy-root-sdk-import
 
 - P2 **composio** `inspector-gap` `inspector-follow-up`
   - **package-typescript-source-entrypoint**: composio: cold import needs TypeScript source entrypoint support
@@ -147,20 +160,13 @@ _none_
   - evidence:
     - extension:index.ts
 
-- P2 **composio** `inspector-gap` `inspector-follow-up`
-  - **runtime-tool-capture**: composio: runtime tool schema needs registration capture
-  - state: open · compat:none
-  - evidence:
-    - registerTool @ src/tools.ts:89
-
 ## Contract Probe Backlog
 
-- P2 **composio** `package-loader`
-  - contract: Inspector installs package dependencies in an isolated workspace before cold import.
-  - id: `package.entrypoint.isolated-dependency-install:composio`
+- P1 **composio** `sdk-alias`
+  - contract: Every observed OpenClaw plugin SDK import remains exported by the target OpenClaw package.
+  - id: `sdk.import.package-export-cold-import:composio`
   - evidence:
-    - @modelcontextprotocol/sdk @ package.json
-    - zod @ package.json
+    - openclaw/plugin-sdk @ index.ts:1
 
 - P2 **composio** `package-loader`
   - contract: Inspector can compile or load TypeScript source entrypoints before registration capture.
@@ -173,39 +179,26 @@ _none_
   - id: `sdk.import.root-barrel-cold-import:composio`
   - evidence:
     - openclaw/plugin-sdk @ index.ts:1
-    - openclaw/plugin-sdk @ src/cli.ts:6
-    - openclaw/plugin-sdk @ src/client.ts:1
-    - openclaw/plugin-sdk @ src/tools.ts:1
-
-- P2 **composio** `tool-runtime`
-  - contract: Registered runtime tools expose stable names, input schemas, and result metadata.
-  - id: `tool.registration.schema-capture:composio`
-  - evidence:
-    - registerTool @ src/tools.ts:89
 
 ## Fixture Seam Inventory
 
-| Fixture  | Priority | Seams          | Hooks               | Registrations             | Manifest contracts |
-| -------- | -------- | -------------- | ------------------- | ------------------------- | ------------------ |
-| composio | high     | plugin-runtime | before_prompt_build | registerCli, registerTool | -                  |
+| Fixture  | Priority | Seams          | Hooks               | Registrations | Manifest contracts |
+| -------- | -------- | -------------- | ------------------- | ------------- | ------------------ |
+| composio | high     | plugin-runtime | before_prompt_build | registerCli   | -                  |
 
 ## Decision Matrix
 
-| Fixture  | Decision            | Seam        | Action                                                                                              | Evidence                                      |
-| -------- | ------------------- | ----------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| composio | inspector-follow-up | cold-import | Compile TypeScript source or run a loader before cold-importing this fixture entrypoint.            | index.ts                                      |
-| composio | inspector-follow-up | cold-import | Install runtime dependencies in an isolated workspace before executing this fixture entrypoint.     | @modelcontextprotocol/sdk, zod                |
-| composio | core-compat-adapter | sdk-import  | Keep the root SDK barrel stable or expose a machine-readable migration map before removing aliases. | openclaw/plugin-sdk                           |
-| composio | inspector-follow-up | tool-schema | Capture registered tool schemas from plugin register() before judging tool compatibility.           | registerTool without manifest contracts.tools |
+| Fixture  | Decision            | Seam            | Action                                                                                                   | Evidence               |
+| -------- | ------------------- | --------------- | -------------------------------------------------------------------------------------------------------- | ---------------------- |
+| composio | core-compat-adapter | sdk-alias       | Restore the package export alias or publish a versioned migration map before cold-importing old plugins. | openclaw/plugin-sdk    |
+| composio | inspector-follow-up | cold-import     | Compile TypeScript source or run a loader before cold-importing this fixture entrypoint.                 | index.ts               |
+| composio | core-compat-adapter | sdk-import      | Keep the root SDK barrel stable or expose a machine-readable migration map before removing aliases.      | openclaw/plugin-sdk    |
+| composio | core-compat-adapter | compat-registry | Add or restore a machine-readable OpenClaw compat record before changing this plugin-facing behavior.    | legacy-root-sdk-import |
 
 ## Raw Logs
 
-| Fixture  | Code                    | Level | Message                                                                          | Evidence                                                                      | Compat record          |
-| -------- | ----------------------- | ----- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
-| composio | seam-inventory          | log   | observed 1 hooks, 2 registrations, and 0 manifest contracts                      | hook:before_prompt_build, registration:registerCli, registration:registerTool | -                      |
-| composio | hook-names-present      | log   | all observed hooks exist in the target OpenClaw hook registry                    | before_prompt_build                                                           | -                      |
-| composio | api-registrars-present  | log   | all observed api.register* calls exist in the target OpenClaw plugin API builder | registerCli, registerTool                                                     | -                      |
-| composio | sdk-exports-present     | log   | all observed plugin SDK imports exist in target OpenClaw package exports         | openclaw/plugin-sdk                                                           | -                      |
-| composio | manifest-fields-checked | log   | plugin manifest fields were compared with target OpenClaw manifest types         | openclaw.plugin.json                                                          | -                      |
-| composio | package-metadata        | log   | selected package metadata for plugin contract checks                             | package.json, @composio/openclaw-plugin, version:0.0.11                       | -                      |
-| composio | compat-record-present   | log   | target OpenClaw checkout has a matching compat registry record                   | legacy-root-sdk-import, status:deprecated                                     | legacy-root-sdk-import |
+| Fixture  | Code                   | Level | Message                                                                          | Evidence                                                | Compat record |
+| -------- | ---------------------- | ----- | -------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------- |
+| composio | seam-inventory         | log   | observed 1 hooks, 1 registrations, and 0 manifest contracts                      | hook:before_prompt_build, registration:registerCli      | -             |
+| composio | api-registrars-present | log   | all observed api.register* calls exist in the target OpenClaw plugin API builder | registerCli                                             | -             |
+| composio | package-metadata       | log   | selected package metadata for plugin contract checks                             | package.json, @composio/openclaw-plugin, version:0.0.12 | -             |
